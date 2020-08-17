@@ -4,21 +4,17 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/nsmith5/microlith/permissions"
 )
 
-var okthings = map[string]struct{}{
-	"walk": struct{}{},
-	"talk": struct{}{},
-
-	// Nah, we're not that cool
-	// "walk the walk": struct{}
+type API struct {
+	ps permissions.Service
 }
-
-type API struct{}
 
 func (a API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	thing := strings.ReplaceAll(r.URL.Path, "/", "")
-	_, ok := okthings[thing]
+	ok := a.ps.CanI(thing)
 	if ok {
 		fmt.Fprintf(w, "Oh yeahh you can really %s\n", thing)
 	} else {
@@ -27,5 +23,5 @@ func (a API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.ListenAndServe(":8080", API{})
+	http.ListenAndServe(":8080", API{permissions.NewSimple()})
 }
