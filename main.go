@@ -41,7 +41,7 @@ func main() {
 		http.ListenAndServe(":8081", handler)
 	default:
 		// If invoked as `./my-app` we're running the product main entrypoint
-		if permsURL == nil {
+		if *permsURL == "" {
 			// No permiossions service URL provided. We're running
 			// in monolith mode
 			http.ListenAndServe(":8080", API{permissions.NewSimple()})
