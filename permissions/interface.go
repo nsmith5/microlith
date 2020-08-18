@@ -9,5 +9,5 @@ var okthings = map[string]struct{}{
 }
 
 type Service interface {
-	CanI(string) bool
+	CanI(string) (bool, error)
 }
